@@ -1,8 +1,14 @@
+import axios from "axios";
 import { useState, useEffect } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 
 function BookmarkEditForm() {
+  // base URL
+  const URL = process.env.REACT_APP_API_URL;
+  // the index from React Router
   let { index } = useParams();
+  // the navigate function from React Router
+  const navigate = useNavigate()
 
   const [bookmark, setBookmark] = useState({
     name: "",
@@ -12,6 +18,17 @@ function BookmarkEditForm() {
     isFavorite: false,
   });
 
+  // make an API call to our back end 
+  // using the index from Router
+  // call setBookmark with the bookmark the call returns
+  useEffect(() => {
+    axios.get(`${URL}/bookmarks/${index}`)
+      .then((response) => {
+        setBookmark(response.data)
+    })
+    .catch((e) => console.log('catch', e))
+  }, []);
+
   const handleTextChange = (event) => {
     setBookmark({ ...bookmark, [event.target.id]: event.target.value });
   };
@@ -20,11 +37,18 @@ function BookmarkEditForm() {
     setBookmark({ ...bookmark, isFavorite: !bookmark.isFavorite });
   };
 
-  useEffect(() => {}, []);
-
+  // what SHOULD we do when the user clicks the submit button
+  // - make a put request
+  // - render a specific component
+  // when we update one resource,
+  // we should get to that resource's detail page
   const handleSubmit = (event) => {
     event.preventDefault();
+    axios.put(`${URL}/bookmarks/${index}`, bookmark)
+    .then(() => { navigate(`/bookmarks/${index}`)
+    })
   };
+
   return (
     <div className="Edit">
       <form onSubmit={handleSubmit}>

@@ -1,14 +1,14 @@
+import axios from "axios";
 import { useState, useEffect } from "react";
 import Bookmark from "./Bookmark";
-import axios from "axios";
 
 function Bookmarks() {
   // const [count, setCount] = useState(0)
+  const URL = process.env.REACT_APP_API_URL;
   const [bookmarks, setBookmarks] = useState([]);
-  const link = process.env.REACT_APP_API_URL;
 
   useEffect(() => {
-    axios.get(`${link}/bookmarks`)
+    axios.get(`${URL}/bookmarks`)
     .then((response) => {
       console.log(response)
       console.log(response.data)
